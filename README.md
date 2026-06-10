@@ -112,7 +112,6 @@ poetry run python -m pytest tests/ -v
 |-------|------|--------|---------|
 | POST | `/api/v1/auth/login` | Публичный | Авторизация |
 | POST | `/api/v1/auth/logout` | Любой авторизованный | Отзыв токена |
-
 | GET | `/api/v1/users/me` | User | Профиль |
 | GET | `/api/v1/users/me/accounts` | User | Список счетов |
 | GET | `/api/v1/users/me/transactions` | User | Список платежей |
