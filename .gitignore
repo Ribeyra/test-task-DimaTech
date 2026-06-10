@@ -1,0 +1,11 @@
+.coverage
+.env
+.opencode/
+.venv
+.vscode
+logs/
+__pycache__/
+*.pyc
+*.log
+dist/
+AGENTS.md
