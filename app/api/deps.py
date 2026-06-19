@@ -1,10 +1,15 @@
+import logging
+
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_session
+from app.exceptions import AppException
 from app.models.user import User
 from app.services.auth import AuthService
+
+logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
 
@@ -17,10 +22,11 @@ async def get_current_user(
         return await AuthService(session).get_user_by_token(
             credentials.credentials
         )
-    except HTTPException:
+    except (HTTPException, AppException):
         raise
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=str(e))
+    except Exception:
+        logger.exception("Unexpected error in get_current_user")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 async def get_current_admin(

@@ -1,10 +1,11 @@
 import hmac
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_session
+from app.exceptions import AppException
 from app.schemas.webhook import PaymentResponse, PaymentWebhook
 from app.services.webhook import WebhookService
 from app.utils.security import compute_signature
@@ -23,9 +24,7 @@ async def payment_webhook(
     expected_sig = compute_signature(data, settings.webhook_secret_key)
 
     if not hmac.compare_digest(body.signature, expected_sig):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signature"
-        )
+        raise AppException("Invalid signature", status_code=400)
 
     result = await WebhookService(session).process_payment(
         transaction_id=body.transaction_id,
